@@ -11,7 +11,9 @@ day = day < 10 ? "0" + day : day;
 let month = date.getMonth() + 1;
 month = month < 10 ? "0" + month : month;
 const year = date.getFullYear();
-const password = `Valantis_${year}${month}${day}`;
+const password = `Valantis_${year}${month}07`;
+
+console.log(password);
 
 //экземпляр axios для уже готового шаблона для запросов
 export const $host = axios.create({

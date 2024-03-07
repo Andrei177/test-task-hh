@@ -6,12 +6,13 @@ import Cart from './components/Cart';
 import Carts from './components/Carts';
 import { nanoid } from 'nanoid';
 import Pagination from './components/Pagination';
+import Filter from './components/Filter';
+import {useItemsStore} from './store/useItemsStore';
 
 function App() {
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(49);
+
+  const {items, isLoading, offset, limit, setItems, upOffset, downOffset, setLimit, setIsLoading} = useItemsStore();
+  const [reset, setReset] = useState(false);
 
   useEffect(() => {
 
@@ -23,13 +24,16 @@ function App() {
       .then((items) => {
         setItems(items.result)
         setIsLoading(false);
+        console.log(items);
       })
     })
     .catch(err => console.log(err.message));
-  }, [offset, limit])
+
+  }, [offset, limit, reset])
   return (
     <div className='container'>
-      <Pagination setOffset={setOffset} offset={offset}/>
+      <Pagination upOffset={upOffset} downOffset={downOffset} offset={offset}/>
+      <Filter reset={reset} setReset={setReset}/>
       <h1 style={{textAlign: "center", fontStyle: 'italic'}}>Список товаров</h1>
       {
         isLoading
