@@ -1,10 +1,10 @@
-#root{
+body{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
 .container{
-    padding: 0 70px;
+    padding: 5px 70px;
 }
 .carts-items{
     display: grid;
@@ -36,4 +36,37 @@
     to{
         transform: rotate(360deg);
     }
+}
+.pagination{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+}
+.count-offset{
+    color: rgb(0, 202, 0);
+    margin-right: 15px;
+    margin-left: 15px;
+    font-size: 30px;
+}
+.count-offset.red{
+    color: rgb(255, 84, 84)
+}
+.btn-next{
+    background-color: rgb(0, 202, 0);
+    border: none;
+    border-radius: 3px;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 5px 7px;
+}
+.btn-back{
+    background-color: brown;
+    border: none;
+    border-radius: 3px;    
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 5px 7px;
 }

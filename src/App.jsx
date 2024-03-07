@@ -5,33 +5,44 @@ import { fetchItems } from './http/fetchItems';
 import Cart from './components/Cart';
 import Carts from './components/Carts';
 import { nanoid } from 'nanoid';
+import Pagination from './components/Pagination';
 
 function App() {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [offset, setOffset] = useState(0);
+  const [limit, setLimit] = useState(49);
 
   useEffect(() => {
-    fetchIds()
+
+    setIsLoading(true);
+
+    fetchIds(offset, limit)
     .then((ids) => {
-      //console.log(ids.result, "ids");
       fetchItems(ids.result)
       .then((items) => {
-      setItems(items.result)
-      setIsLoading(false);
-      //console.log(items.result);
-    })});
-  }, [])
+        setItems(items.result)
+        setIsLoading(false);
+      })
+    })
+    .catch(err => console.log(err.message));
+  }, [offset, limit])
   return (
-    <>
-    <Carts>
+    <div className='container'>
+      <Pagination setOffset={setOffset} offset={offset}/>
+      <h1 style={{textAlign: "center", fontStyle: 'italic'}}>Список товаров</h1>
       {
-        items.map(item => 
-          <Cart key={nanoid()} cart={item}/>
-          )
+        isLoading
+        ?<div className='loader'></div>
+        :<Carts>
+        {
+          items.map(item => 
+            <Cart key={nanoid()} cart={item}/>
+            )
+        }
+        </Carts>
       }
-    </Carts>
-    {isLoading && <div className='loader'></div>}
-    </>
+    </div>
   )
 }
 
