@@ -1,4 +1,3 @@
-import md5 from 'md5'
 import React from 'react'
 
 const Cart = ({cart}) => {

@@ -11,7 +11,7 @@ const ChoiceFilter = ({title, items, setSelect, select, type}) => {
                 <h3 
                     key={nanoid()}
                     className='filter-item' 
-                    style={{background: select.value == item ? "rgb(0, 202, 0)" : "white"}} 
+                    style={{background: select.value == item ? "rgb(255, 225, 0)" : "white"}} 
                     onClick={() => setSelect({value: item, type: type})}
                 >
                     {item}

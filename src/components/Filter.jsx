@@ -74,14 +74,16 @@ const Filter = ({reset, setReset}) => {
     }
   return (
     <div>
-      <h2>Выберите параметр фильтрации</h2>
+      <h2 style={{fontWeight: 400}}>Выберите параметр фильтрации</h2>
       <div className='filter-option'>
         <ChoiceFilter type="brand" select={select} setSelect={setSelect} title={"Бренд"} items={brands}/>
         <ChoiceFilter type="price" select={select} setSelect={setSelect} title={"Стоимость"} items={prices}/>
         <ChoiceFilter type="product" select={select} setSelect={setSelect} title={"Название"} items={products}/>
       </div>
-      <button onClick={resetFn} className="input-search">Сбросить</button>
-      <button disabled={!select.type} onClick={getFilteredItems} className="input-search">Применить</button>
+      <div className="filter-btns">
+        <button style={{cursor: "pointer"}} disabled={!select.type} onClick={resetFn} className="filter-btn">Сбросить</button>
+        <button style={{cursor: "pointer"}} disabled={!select.type} onClick={getFilteredItems} className="filter-btn">Применить</button>
+      </div>
     </div>
   )
 }
