@@ -14,8 +14,7 @@ function App() {
   const {items, isLoading, offset, limit, setItems, upOffset, downOffset, setLimit, setIsLoading} = useItemsStore();
   const [reset, setReset] = useState(false);
 
-  useEffect(() => {
-
+  const fetchProducts = () => {
     setIsLoading(true);
 
     fetchIds(offset, limit)
@@ -24,12 +23,25 @@ function App() {
       .then((items) => {
         setItems(items.result)
         setIsLoading(false);
-        console.log(items);
+        console.log(items, "items");
+      })
+      .catch(err => {
+        console.log(err.message, "При запросе произошла ошибка, пробуем повторить запрос");
+        fetchProducts();
       })
     })
-    .catch(err => console.log(err.message));
+    .catch(err => {
+      console.log(err.message, "При запросе произошла ошибка, пробуем повторить запрос")
+      fetchProducts();
+    });
+  }
+
+  useEffect(() => {
+
+    fetchProducts();
 
   }, [offset, limit, reset])
+
   return (
     <div className='container'>
       <Pagination upOffset={upOffset} downOffset={downOffset} offset={offset}/>
@@ -40,9 +52,11 @@ function App() {
         ?<div className='loader'></div>
         :<Carts>
         {
-          items.map(item => 
+          items.length
+          ?items.map(item => 
             <Cart key={nanoid()} cart={item}/>
             )
+          :<h2>Не удалось загрузить товары</h2>
         }
         </Carts>
       }

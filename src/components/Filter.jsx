@@ -1,46 +1,87 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { fetchFilteredIds } from '../http/fetchFilteredIds';
 import { useItemsStore } from '../store/useItemsStore';
 import { fetchItems } from '../http/fetchItems';
+import { fetchFields } from '../http/fetchFields';
+import { useFilterStore } from '../store/useFilterStore';
+import ChoiceFilter from './ChoiceFilter';
 
 const Filter = ({reset, setReset}) => {
-    const {setItems, setIsLoading} = useItemsStore();
+    const {setItems, setIsLoading, offset, limit} = useItemsStore();
+    const {brands, prices, products, setBrands, setPrices, setProducts} = useFilterStore();
+    const [select, setSelect] = useState({type:"", value:""});
 
-    const [name, setName] = useState("");
-    const [price, setPrice] = useState("");
-    const [brand, setBrand] = useState("");
+    const fetchBrands = () => {
+      fetchFields({field: "brand", offset, limit})
+      .then(res => setBrands(res))
+      .catch(err => {
+        console.log(err.message, "При запросе произошла ошибка, пробуем повторить запрос");
+        fetchBrands();
+      })
+    }
+    const fetchPrices = () => {
+      fetchFields({field: "price", offset, limit})
+      .then(res => setPrices(res))
+      .catch(err => {
+        console.log(err.message, "При запросе произошла ошибка, пробуем повторить запрос");
+        fetchPrices();
+      })
+    }
+    const fetchProducts = () => {
+      fetchFields({field: "product", offset, limit})
+      .then(res => setProducts(res))
+      .catch(err => {
+        console.log(err.message, "При запросе произошла ошибка, пробуем повторить запрос");
+        fetchProducts();
+      })
+    }
 
-    const getFilteredItems = async () => {
+    useEffect(() => {
+      fetchBrands();
+      fetchPrices();
+      fetchProducts();
+    }, [offset, limit])
 
-        const filterOptions = {}
-        if(name) filterOptions.product = name;
-        if(price) filterOptions.price = Number(price);
-        if(brand) filterOptions.brand = brand;
-
-        console.log(filterOptions);
-
+    const getFilteredItems = () => {
         setIsLoading(true);
-        const filteredIds = await fetchFilteredIds(filterOptions);
-        console.log(filteredIds, "filteredIds");
-        const filteredItems = await fetchItems(filteredIds.result);
-        console.log(filteredItems, "filteredItems");
-        setItems(filteredItems.result);
-        setIsLoading(false);
+        const filterOptions = {
+          [select.type]: select.value,
+          offset,
+          limit
+        }
+
+        fetchFilteredIds(filterOptions)
+        .then(filteredIds => {
+          fetchItems(filteredIds.result)
+          .then(filteredItems => {
+            setItems(filteredItems.result);
+            setIsLoading(false);
+          })
+          .catch(err => {
+            console.log(err.message, "При запросе произошла ошибка, пробуем повторить запрос");
+            getFilteredItems();
+          })
+        })
+        .catch(err => {
+          console.log(err.message, "При запросе произошла ошибка, пробуем повторить запрос");
+          getFilteredItems();
+        })
     }
 
     const resetFn = () => {
         setReset(!reset);
-        setName("");
-        setPrice("");
-        setBrand("");
+        setSelect({});
     }
   return (
     <div>
-      <input disabled={price || brand} className="input-search" placeholder="Поиск по названию товара" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
-      <input disabled={name || brand} className="input-search" placeholder="Поиск по цене" type="text" value={price} onChange={(e) => setPrice(e.target.value)}/>
-      <input disabled={price || name} className="input-search" placeholder="Поиск по имени брэнда" type="text" value={brand} onChange={(e) => setBrand(e.target.value)}/>
-      <button disabled={!name && !price && !brand} onClick={getFilteredItems} className="input-search">Применить</button>
-      <button disabled={!name && !price && !brand} onClick={resetFn} className="input-search">Сбросить</button>
+      <h2>Выберите параметр фильтрации</h2>
+      <div className='filter-option'>
+        <ChoiceFilter type="brand" select={select} setSelect={setSelect} title={"Бренд"} items={brands}/>
+        <ChoiceFilter type="price" select={select} setSelect={setSelect} title={"Стоимость"} items={prices}/>
+        <ChoiceFilter type="product" select={select} setSelect={setSelect} title={"Название"} items={products}/>
+      </div>
+      <button onClick={resetFn} className="input-search">Сбросить</button>
+      <button disabled={!select.type} onClick={getFilteredItems} className="input-search">Применить</button>
     </div>
   )
 }

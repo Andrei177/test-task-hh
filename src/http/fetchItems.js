@@ -1,7 +1,7 @@
 import { $host } from "./http";
 
 export const fetchItems = async (ids) => {
-    const setIds = new Set(ids);// создание set-коллекции для ислключения дубликатов
+    const setIds = new Set(ids);// создание set-коллекции для исключения дубликатов id
     const uniqIds = [];
     for(let id of setIds){
         uniqIds.push(id);
