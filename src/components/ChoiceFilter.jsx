@@ -4,7 +4,6 @@ import React from 'react'
 const ChoiceFilter = ({title, items, setSelect, select, type}) => {
   return (
     <>
-        {/* <h2 style={{display: "inline-block"}}>{title}</h2> */}
         <div className='choice-area'>
         {
             items.map(item => 

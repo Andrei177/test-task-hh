@@ -11,7 +11,7 @@ import {useItemsStore} from './store/useItemsStore';
 
 function App() {
 
-  const {items, isLoading, offset, limit, setItems, upOffset, downOffset, setLimit, setIsLoading} = useItemsStore();
+  const {items, isLoading, offset, limit, setItems, upOffset, downOffset, setIsLoading} = useItemsStore();
   const [reset, setReset] = useState(false);
 
   const fetchProducts = () => {
@@ -23,7 +23,7 @@ function App() {
       .then((items) => {
         setItems(items.result)
         setIsLoading(false);
-        console.log(items, "items");
+        //console.log(items, "items");
       })
       .catch(err => {
         console.log(err.message, "При запросе произошла ошибка, пробуем повторить запрос");

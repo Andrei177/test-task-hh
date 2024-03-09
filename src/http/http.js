@@ -13,7 +13,7 @@ month = month < 10 ? "0" + month : month;
 const year = date.getUTCFullYear();
 const password = `Valantis_${year}${month}${day}`;
 
-console.log(password);
+//console.log(password);
 
 //экземпляр axios для уже готового шаблона для запросов
 export const $host = axios.create({
